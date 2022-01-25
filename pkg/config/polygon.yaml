@@ -1,0 +1,5 @@
+common:
+  chainID: 137
+  subgraph:
+    exchange: "https://api.thegraph.com/subgraphs/name/dynamic-amm/dmm-exchange-matic"
+    aggregator: "https://api.thegraph.com/subgraphs/name/dynamic-amm/aggregator-router-polygon"
