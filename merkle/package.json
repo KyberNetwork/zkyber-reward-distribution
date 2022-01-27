@@ -1,0 +1,17 @@
+{
+  "name": "generate-merkle-root",
+  "version": "0.0.1",
+  "description": "community tool to calculate reward distribution data and its merkle root and proofs",
+  "main": "src/generateMerkleRoot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ethers": "^5.5.3",
+    "keccak256": "^1.0.6",
+    "mathjs": "^10.1.0",
+    "merkletreejs": "^0.2.27",
+    "yargs": "^17.3.1"
+  },
+  "license": "MIT"
+}
