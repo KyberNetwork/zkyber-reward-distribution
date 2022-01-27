@@ -115,8 +115,8 @@ func (s *KyberReward) CalculateRewardForUsers(cycle int) error {
 	for _, a := range finalList {
 		address := common.HexToAddress(a)
 		one := OneReward{
-			Tokens:            s.rewardTokens,
-			CumulativeAmounts: []*big.Int{},
+			Tokens:  s.rewardTokens,
+			Amounts: []*big.Int{},
 		}
 		for i, _ := range s.rewardTokens {
 			amountFBig := util.NewFloat().SetInt(s.rewardAmounts[i])
@@ -126,8 +126,8 @@ func (s *KyberReward) CalculateRewardForUsers(cycle int) error {
 				util.NewFloat().SetInt(big.NewInt(int64(numUsers))),
 			)
 			amount, _ := userAmountFBig.Int(nil)
-			one.CumulativeAmounts = append(
-				one.CumulativeAmounts,
+			one.Amounts = append(
+				one.Amounts,
 				amount,
 			)
 		}

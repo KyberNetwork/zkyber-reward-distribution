@@ -36,10 +36,10 @@ func (sbi *StrBigInt) UnmarshalJSON(v []byte) error {
 }
 
 type OneReward struct {
-	Index             int              `json:"index"`
-	Tokens            []common.Address `json:"tokens"`
-	CumulativeAmounts []*big.Int       `json:"cumulativeAmounts"`
-	Proof             []common.Hash    `json:"proof"`
+	Index   int              `json:"index"`
+	Tokens  []common.Address `json:"tokens"`
+	Amounts []*big.Int       `json:"amounts"`
+	Proof   []common.Hash    `json:"proof"`
 }
 
 func (or *OneReward) SetFromJsCompatibleVersion(jsor *jsCompatibleOneReward) {
@@ -50,32 +50,32 @@ func (or *OneReward) SetFromJsCompatibleVersion(jsor *jsCompatibleOneReward) {
 	or.Index = jsor.Index
 	or.Tokens = jsor.Tokens
 	or.Proof = jsor.Proof
-	or.CumulativeAmounts = []*big.Int{}
-	for _, a := range jsor.CumulativeAmounts {
-		or.CumulativeAmounts = append(
-			or.CumulativeAmounts,
+	or.Amounts = []*big.Int{}
+	for _, a := range jsor.Amounts {
+		or.Amounts = append(
+			or.Amounts,
 			a.Int,
 		)
 	}
 }
 
 type jsCompatibleOneReward struct {
-	Index             int              `json:"index"`
-	Tokens            []common.Address `json:"tokens"`
-	CumulativeAmounts []StrBigInt      `json:"cumulativeAmounts"`
-	Proof             []common.Hash    `json:"proof"`
+	Index   int              `json:"index"`
+	Tokens  []common.Address `json:"tokens"`
+	Amounts []StrBigInt      `json:"amounts"`
+	Proof   []common.Hash    `json:"proof"`
 }
 
 func jsCompatibleOneRewardFromOneReward(or OneReward) *jsCompatibleOneReward {
 	jsor := jsCompatibleOneReward{
-		Index:             or.Index,
-		Tokens:            or.Tokens,
-		CumulativeAmounts: []StrBigInt{},
-		Proof:             or.Proof,
+		Index:   or.Index,
+		Tokens:  or.Tokens,
+		Amounts: []StrBigInt{},
+		Proof:   or.Proof,
 	}
-	for _, v := range or.CumulativeAmounts {
-		jsor.CumulativeAmounts = append(
-			jsor.CumulativeAmounts,
+	for _, v := range or.Amounts {
+		jsor.Amounts = append(
+			jsor.Amounts,
 			StrBigInt{big.NewInt(0).Set(v)},
 		)
 	}
