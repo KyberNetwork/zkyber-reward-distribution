@@ -1,0 +1,5 @@
+common:
+  chainID: 25
+  subgraph:
+    exchange: "https://cronos-subgraph.kyberswap.com/subgraphs/name/kyberswap/kyberswap-cronos"
+    aggregator: "https://cronos-subgraph.knstats.com/subgraphs/name/dynamic-amm/aggregator-router-cronos"

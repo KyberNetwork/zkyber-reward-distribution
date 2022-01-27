@@ -1,0 +1,5 @@
+common:
+  chainID: 1
+  subgraph:
+    exchange: "https://api.thegraph.com/subgraphs/name/dynamic-amm/dynamic-amm"
+    aggregator: "https://api.thegraph.com/subgraphs/name/dynamic-amm/aggregator-router-ethereum"

@@ -1,0 +1,5 @@
+common:
+  chainID: 43114
+  subgraph:
+    exchange: "https://api.thegraph.com/subgraphs/name/dynamic-amm/dmm-exchange-avax"
+    aggregator: "https://api.thegraph.com/subgraphs/name/dynamic-amm/aggregator-router-avalanche"

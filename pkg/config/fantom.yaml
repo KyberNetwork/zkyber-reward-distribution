@@ -1,0 +1,5 @@
+common:
+  chainID: 250
+  subgraph:
+    exchange: "https://api.thegraph.com/subgraphs/name/dynamic-amm/dmm-exchange-ftm"
+    aggregator: "https://api.thegraph.com/subgraphs/name/dynamic-amm/aggregator-router-fantom"

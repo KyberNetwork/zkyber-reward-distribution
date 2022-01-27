@@ -1,0 +1,5 @@
+common:
+  chainID: 56
+  subgraph:
+    exchange: "https://api.thegraph.com/subgraphs/name/dynamic-amm/dmm-exchange-bsc"
+    aggregator: "https://api.thegraph.com/subgraphs/name/dynamic-amm/aggregator-router-bsc"
