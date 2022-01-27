@@ -9,7 +9,8 @@ With that in mind, Kyber team implemented the tool to do the following steps:
 1. The tool reads from the subgraphs to get the list of users who swap or add liquidity in the selected timeframe.
 2. The tool then reads the list of ZKyber eligible users (at the moment, it's the file ./data/zkyber_users_list.json).
 3. The tool finds the users who belong to both lists.
-4. The tool generates a new reward distribution content in a file which has the same format as this [example json](https://gist.github.com/tranvictor/43b314fc8adb57752b65ca1d4554dbed). 
+4. The tool generates a new reward distribution content in a file which has the same format as this [example json](https://github.com/KyberNetwork/zkyber-reward-distribution/blob/main/results/latest_merkle_data.json
+   ). 
 5. The file provides all the information needed for a new reward distribution cycle.
 
 ## How to use
