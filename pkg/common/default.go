@@ -1,7 +1,6 @@
 package common
 
 const (
-	DefaultChainId        = 1
 	DefaultCycle          = 1
 	DefaultStartTimestamp = 1640131200
 	DefaultEndTimestamp   = 1643587200

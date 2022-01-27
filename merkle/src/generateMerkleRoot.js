@@ -12,5 +12,5 @@ if (typeof json !== 'object') {
 
 json = JSON.stringify(parseRewards(json), null, 2);
 fs.writeFileSync(path.join(__dirname, `../../results/cycle_${cycle}/merkle_data.json`), json);
-console.log(`Writing merkle data to results//cycle_${cycle}/merkle_data.json ... Done.`);
+console.log(`Writing merkle data to ./results/cycle_${cycle}/merkle_data.json ... \nDone.`);
 fs.writeFileSync(path.join(__dirname, `../../results/latest_merkle_data.json`), json);

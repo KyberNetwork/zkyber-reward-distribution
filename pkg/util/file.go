@@ -17,7 +17,7 @@ func WriteUsersListToFile(usersSet []string, path string, fileName string) error
 		os.MkdirAll(path, 0700) // Create your folder
 	}
 
-	fmt.Printf("Writing users list to ./%s...", fileName)
+	fmt.Printf("Writing users list to ./%s...\n", fileName)
 
 	return ioutil.WriteFile(fileName, jsonData, 0744)
 }

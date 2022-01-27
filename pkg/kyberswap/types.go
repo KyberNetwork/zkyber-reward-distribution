@@ -30,8 +30,8 @@ type RouterResp struct {
 
 type LiquidityPositionResp struct {
 	User                  LiquidityPositionUser `json:"user"`
-	LiquidityTokenBalance string                `json:"pair"`
-	Timestamp             string                `json:"time"`
+	LiquidityTokenBalance string                `json:"liquidityTokenBalance"`
+	Timestamp             uint64                `json:"timestamp"`
 }
 
 type LiquidityPositionUser struct {

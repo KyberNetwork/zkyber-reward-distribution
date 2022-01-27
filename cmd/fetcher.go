@@ -2,17 +2,18 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/KyberNetwork/zkyber-reward-distribution/pkg/config"
-	"github.com/KyberNetwork/zkyber-reward-distribution/pkg/kyberswap"
 	"math"
 
 	"github.com/KyberNetwork/zkyber-reward-distribution/pkg/common"
+	"github.com/KyberNetwork/zkyber-reward-distribution/pkg/kyberswap"
 	"github.com/KyberNetwork/zkyber-reward-distribution/pkg/util/env"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
 	// Used for flags.
+	cfgFile            string
 	chainId            int
 	subgraphExchange   string
 	subgraphAggregator string
@@ -22,18 +23,28 @@ var (
 
 func newFetcherCmd() *cobra.Command {
 
-	var command = &cobra.Command{
+	var cmd = &cobra.Command{
 		Use:   "fetcher",
 		Short: "Start ZKyber reward fetcher",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c := &kyberswap.Cfg{
-				Common: &config.Common{
-					ChainID: chainId,
-					Subgraph: config.Subgraph{
-						Exchange:   subgraphExchange,
-						Aggregator: subgraphAggregator,
-					},
-				},
+			c := &kyberswap.Cfg{}
+
+			if cfgFile != "" {
+				if err := viper.Unmarshal(c); err != nil {
+					return err
+				}
+			}
+
+			if chainId != 0 {
+				c.Common.ChainID = chainId
+			}
+
+			if subgraphExchange != "" {
+				c.Common.Subgraph.Exchange = subgraphExchange
+			}
+
+			if subgraphAggregator != "" {
+				c.Common.Subgraph.Aggregator = subgraphAggregator
 			}
 
 			fmt.Printf("config: %+v\n", c)
@@ -48,11 +59,28 @@ func newFetcherCmd() *cobra.Command {
 		},
 	}
 
-	command.Flags().IntVar(&chainId, "chainId", env.ParseNumFromEnv(common.EnvVarChainId, common.DefaultChainId, 0, math.MaxInt32), "chain ID")
-	command.Flags().StringVar(&subgraphExchange, "subgraphExchange", env.StringFromEnv(common.EnvVarSubgraphExchange, ""), "exchange subgraph url")
-	command.Flags().StringVar(&subgraphAggregator, "subgraphAggregator", env.StringFromEnv(common.EnvVarSubgraphAggregator, ""), "aggregator subgraph url")
-	command.Flags().IntVar(&startTimestamp, "startTimestamp", env.ParseNumFromEnv(common.EnvVarStartTimestamp, common.DefaultStartTimestamp, 0, math.MaxInt64), "from timestamp")
-	command.Flags().IntVar(&endTimestamp, "endTimestamp", env.ParseNumFromEnv(common.EnvVarEndTimestamp, common.DefaultEndTimestamp, 0, math.MaxInt64), "end timestamp")
+	cobra.OnInitialize(initConfig)
 
-	return command
+	cmd.Flags().StringVarP(&cfgFile, "config", "c", "", "config file")
+	cmd.Flags().IntVar(&chainId, "chainId", env.ParseNumFromEnv(common.EnvVarChainId, 0, 0, math.MaxInt32), "chain ID")
+	cmd.Flags().StringVar(&subgraphExchange, "subgraphExchange", env.StringFromEnv(common.EnvVarSubgraphExchange, ""), "exchange subgraph url")
+	cmd.Flags().StringVar(&subgraphAggregator, "subgraphAggregator", env.StringFromEnv(common.EnvVarSubgraphAggregator, ""), "aggregator subgraph url")
+	cmd.Flags().IntVar(&startTimestamp, "startTimestamp", env.ParseNumFromEnv(common.EnvVarStartTimestamp, common.DefaultStartTimestamp, 0, math.MaxInt64), "from timestamp")
+	cmd.Flags().IntVar(&endTimestamp, "endTimestamp", env.ParseNumFromEnv(common.EnvVarEndTimestamp, common.DefaultEndTimestamp, 0, math.MaxInt64), "end timestamp")
+
+	return cmd
+}
+
+func initConfig() {
+	if cfgFile == "" {
+		return
+	}
+
+	// Use config file from the flag.
+	viper.SetConfigFile(cfgFile)
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Printf("Using config file: %s\n", viper.ConfigFileUsed())
+	}
 }

@@ -63,9 +63,6 @@ func (s *KyberReward) getResultFiles(root string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, file := range files {
-		fmt.Println(file)
-	}
 
 	return files, nil
 }
@@ -110,7 +107,9 @@ func (s *KyberReward) CalculateRewardForUsers(cycle int) error {
 
 	numUsers := len(finalList)
 
-	fmt.Println("numUsers", numUsers)
+	fmt.Println("==============================")
+	fmt.Printf("\nNumber of eligible users: %d\n\n", numUsers)
+	fmt.Println("==============================")
 
 	for _, a := range finalList {
 		address := common.HexToAddress(a)
@@ -173,7 +172,7 @@ func WriteRewardDataToFile(rewardData *Rewards, path string, fileName string) er
 		return err
 	}
 
-	fmt.Printf("Writing reward data to ./%s...", fileName)
+	fmt.Printf("Writing reward data to ./%s...\n", fileName)
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		os.MkdirAll(path, 0700) // Create your file

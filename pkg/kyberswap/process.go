@@ -140,16 +140,11 @@ func (s *Fetcher) getAddLiquidityUsersList(ctx context.Context, cfg *config.Comm
 		mergeAddresses(usersArray)
 
 		if len(resp.Data) < graphFirstLimit {
-			fmt.Println("no more router exchanges, stop crawling")
+			fmt.Println("no more liquidity positions, stop crawling")
 			break
 		}
 
-		t, err := strconv.ParseUint(resp.Data[len(resp.Data)-1].Timestamp, 10, 64)
-		if err != nil {
-			return nil, err
-		}
-
-		lastTimestamp = t
+		lastTimestamp = resp.Data[len(resp.Data)-1].Timestamp
 	}
 
 	return usersSet.List(), nil
