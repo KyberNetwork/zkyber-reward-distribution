@@ -12,7 +12,9 @@ type IRunner interface {
 }
 
 type Fetcher struct {
-	cfg *Cfg
+	cfg            *Cfg
+	startTimestamp uint64
+	endTimestamp   uint64
 }
 
 type RouterResp struct {
@@ -24,4 +26,14 @@ type RouterResp struct {
 	Timestamp   string `json:"time"`
 	BlockNumber string `json:"blockNumber"`
 	Tx          string `json:"tx"`
+}
+
+type LiquidityPositionResp struct {
+	User                  LiquidityPositionUser `json:"user"`
+	LiquidityTokenBalance string                `json:"pair"`
+	Timestamp             string                `json:"time"`
+}
+
+type LiquidityPositionUser struct {
+	Id string `json:"id"`
 }

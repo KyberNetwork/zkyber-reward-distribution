@@ -10,7 +10,7 @@ const routerLogQuery = `
 			first: %d,
 			where: {
 				time_gt: %d,
-				time_lt: %d
+				time_lte: %d
 			},
 			orderBy: time
 			orderDirection: asc
@@ -20,6 +20,25 @@ const routerLogQuery = `
 			amount
 			userAddress
 			time
+		}
+	}
+`
+
+const addLiquidityQuery = `
+	query {
+		liquidityPositionSnapshots(
+			first: %d,
+			where: {
+				liquidityTokenBalance_gt: 0,
+				timestamp_gt: %d,
+				timestamp_lte: %d
+			}
+		) {
+			timestamp
+			user {
+				id
+			}
+			liquidityTokenBalance
 		}
 	}
 `

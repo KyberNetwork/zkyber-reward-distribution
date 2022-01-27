@@ -36,13 +36,9 @@ func newFetcherCmd() *cobra.Command {
 				},
 			}
 
-			c.Common.ChainID = chainId
-			c.Common.Subgraph.Exchange = subgraphExchange
-			c.Common.Subgraph.Aggregator = subgraphAggregator
-
 			fmt.Printf("config: %+v\n", c)
 
-			fetcher, err := kyberswap.NewFetcher(c)
+			fetcher, err := kyberswap.NewFetcher(c, uint64(startTimestamp), uint64(endTimestamp))
 
 			if err != nil {
 				return err

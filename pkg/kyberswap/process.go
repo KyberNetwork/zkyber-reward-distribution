@@ -12,8 +12,12 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-func NewFetcher(cfg *Cfg) (IRunner, error) {
-	return &Fetcher{cfg: cfg}, nil
+func NewFetcher(cfg *Cfg, startTimestamp, endTimestamp uint64) (IRunner, error) {
+	return &Fetcher{
+		cfg:            cfg,
+		startTimestamp: startTimestamp,
+		endTimestamp:   endTimestamp,
+	}, nil
 }
 
 func (s *Fetcher) Run() error {
@@ -29,9 +33,18 @@ func (s *Fetcher) UpdateData(cfg *config.Common) {
 	if err != nil {
 		fmt.Printf("failed to get router exchanges, err: %v", err)
 	}
-	fmt.Printf("got %d router exchange(s) from subgraph\n", len(swapUsers))
+	fmt.Printf("got %d users who had swapped\n", len(swapUsers))
 
-	if err := util.WriteUsersListToFile(swapUsers, common.DataFolder, fmt.Sprintf(
+	addLiquidityUsers, err := s.getAddLiquidityUsersList(ctx, cfg)
+
+	if err != nil {
+		fmt.Printf("failed to get liquidity popsitions, err: %v", err)
+	}
+	fmt.Printf("got %d users who had added liquidity\n", len(addLiquidityUsers))
+
+	totalUsers := util.SliceUnion(swapUsers, addLiquidityUsers)
+
+	if err := util.WriteUsersListToFile(totalUsers, common.DataFolder, fmt.Sprintf(
 		"%s/users_list_%d.json",
 		common.DataFolder,
 		s.cfg.Common.ChainID,
@@ -41,7 +54,7 @@ func (s *Fetcher) UpdateData(cfg *config.Common) {
 }
 
 func (s *Fetcher) getSwapUsersList(ctx context.Context, cfg *config.Common) ([]string, error) {
-	lastTimestamp := uint64(common.DefaultStartTimestamp)
+	lastTimestamp := s.startTimestamp
 
 	client := graphql.NewClient(cfg.Subgraph.Aggregator)
 
@@ -53,9 +66,9 @@ func (s *Fetcher) getSwapUsersList(ctx context.Context, cfg *config.Common) ([]s
 		}
 	}
 
-	for lastTimestamp <= common.DefaultEndTimestamp {
+	for lastTimestamp <= s.endTimestamp {
 		fmt.Printf("crawling router exchanges from timestamp: %d\n", lastTimestamp)
-		query := fmt.Sprintf(routerLogQuery, graphFirstLimit, lastTimestamp, common.DefaultEndTimestamp)
+		query := fmt.Sprintf(routerLogQuery, graphFirstLimit, lastTimestamp, s.endTimestamp)
 		req := graphql.NewRequest(query)
 
 		var resp struct {
@@ -71,6 +84,57 @@ func (s *Fetcher) getSwapUsersList(ctx context.Context, cfg *config.Common) ([]s
 
 		for _, r := range resp.Data {
 			usersArray = append(usersArray, r.UserAddress)
+		}
+
+		mergeAddresses(usersArray)
+
+		if len(resp.Data) < graphFirstLimit {
+			fmt.Println("no more router exchanges, stop crawling")
+			break
+		}
+
+		t, err := strconv.ParseUint(resp.Data[len(resp.Data)-1].Timestamp, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+
+		lastTimestamp = t
+	}
+
+	return usersSet.List(), nil
+}
+
+func (s *Fetcher) getAddLiquidityUsersList(ctx context.Context, cfg *config.Common) ([]string, error) {
+	lastTimestamp := s.startTimestamp
+
+	client := graphql.NewClient(cfg.Subgraph.Exchange)
+
+	usersSet := sets.NewString()
+
+	mergeAddresses := func(addresses []string) {
+		for _, a := range addresses {
+			usersSet.Insert(a)
+		}
+	}
+
+	for lastTimestamp <= s.endTimestamp {
+		fmt.Printf("crawling liquidity positions from timestamp: %d\n", lastTimestamp)
+		query := fmt.Sprintf(addLiquidityQuery, graphFirstLimit, lastTimestamp, s.endTimestamp)
+		req := graphql.NewRequest(query)
+
+		var resp struct {
+			Data []*LiquidityPositionResp `json:"liquidityPositionSnapshots"`
+		}
+
+		if err := client.Run(ctx, req, &resp); err != nil {
+			fmt.Printf("failed to query subgraph, err: %v\n", err)
+			return nil, err
+		}
+
+		var usersArray []string
+
+		for _, r := range resp.Data {
+			usersArray = append(usersArray, r.User.Id)
 		}
 
 		mergeAddresses(usersArray)
