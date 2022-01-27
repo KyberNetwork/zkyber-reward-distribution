@@ -37,3 +37,29 @@ Done.
 You have run the tool successfully and the reward distribution content is saved to `./results/cycle_#{cycle}/merkle_data.json`.
 
 *Note: numbers in the output can change*.
+
+## Global Environments
+
+You can override any of the environment variables here. If you don't, the tool will get the default value from `pkg/common/default.go`
+
+| Environment variable | Note                                                                              |
+|----------------------|-----------------------------------------------------------------------------------|
+| CHAIN_ID             | Log level (`trace`,`debug`,`info`,`warn`,`error`,`fatal`,`panic`) default: `info` |
+| SUBGRAPH_EXCHANGE    | Exchange subgraph url                                                             |
+| SUBGRAPH_AGGREGATOR  | Aggregator subgraph url                                                           |
+| CYCLE                | Cycle (1, 2, 3 ...), at the moment you have set it manually                       |
+| START_TIMESTAMP      | Start timestamp to calculate eligible users                                       |
+| END_TIMESTAMP        | End timestamp to calculate eligible users                                         |
+| TOTAL_REWARD         | Total reward in KNC                                                               |
+
+
+---
+
+## Flags
+
+Use for `fetcher` command only. It should point to a `.yaml` file inside `pkg/config` folder.
+
+| CLI flag | Note        |
+|----------|-------------|
+| c,config | config file |
+
