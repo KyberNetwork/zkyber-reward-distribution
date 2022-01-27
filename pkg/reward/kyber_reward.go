@@ -25,22 +25,21 @@ type KyberReward struct {
 }
 
 func NewKyberReward(startTimestamp, endTimestamp uint64, totalReward string) *KyberReward {
-	amount := new(big.Int)
-	amount, ok := amount.SetString(totalReward, 10)
+	totalRewardBI := new(big.Int)
+	totalRewardBI, ok := totalRewardBI.SetString(totalReward, 10)
 
 	if !ok {
-		fmt.Println("SetString: can't set reward amount")
-		log.Fatalln("SetString: can't set reward amount")
+		log.Fatalln("SetString: can't set total reward amount")
 	}
 
 	return &KyberReward{
 		startTimestamp,
 		endTimestamp,
 		[]common.Address{
-			common.HexToAddress("0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"),
+			common.HexToAddress("0xfe56d5892BDffC7BF58f2E84BE1b2C32D21C308b"), // KNC is only claimable on BSC
 		},
 		[]*big.Int{
-			amount,
+			totalRewardBI,
 		},
 	}
 }
