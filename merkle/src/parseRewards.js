@@ -6,7 +6,7 @@ const ethersKeccak = ethers.utils.keccak256;
 const abiEncoder = ethers.utils.defaultAbiCoder;
 
 module.exports.parseRewards = function (rewardInfo) {
-  const cycle = rewardInfo.cycle;
+  const phaseId = rewardInfo.phaseId;
   const userRewards = rewardInfo.userRewards;
   // verify addresses (check duplicates, invalid) and convert cumulative amounts to BN
   // with account as key
@@ -14,15 +14,13 @@ module.exports.parseRewards = function (rewardInfo) {
   // structure data to include account field
   const treeElements = addAccountInMapping(mappedTokensAmounts);
   // hash tree elements to leaves
-  const leaves = hashElements(treeElements, cycle);
+  const leaves = hashElements(treeElements, phaseId);
   const tree = new MerkleTree(leaves, keccak256, {sort: true});
   const userRewardsWithProof = treeElements.reduce((memo, {account}, index) => {
-    let tokens = mappedTokensAmounts[account].tokens
     let amounts = mappedTokensAmounts[account].amounts.map((amt) => amt.toHexString())
 
     memo[account] = {
       index,
-      tokens,
       amounts,
       proof: tree.getHexProof(leaves[index]),
     };
@@ -30,7 +28,8 @@ module.exports.parseRewards = function (rewardInfo) {
   }, {});
 
   return {
-    cycle: cycle,
+    phaseId: phaseId,
+    tokens: rewardInfo.tokens,
     startTimestamp: rewardInfo.startTimestamp,
     endTimestamp: rewardInfo.endTimestamp,
     merkleRoot: tree.getHexRoot(),
@@ -47,7 +46,6 @@ function verifyAddressAndConvertAmounts(userRewards) {
     if (memo[parsedAddress]) throw new Error(`Duplicate address: ${parsed}`);
     const parsedTokenAmounts = userRewards[account].amounts.map((amt) => BN.from(amt));
     memo[parsedAddress] = {
-      tokens: userRewards[account].tokens,
       amounts: parsedTokenAmounts,
     };
     return memo;
@@ -57,17 +55,16 @@ function verifyAddressAndConvertAmounts(userRewards) {
 function addAccountInMapping(mappedTokensAmounts) {
   return Object.keys(mappedTokensAmounts).map((account) => ({
     account,
-    tokens: mappedTokensAmounts[account].tokens,
     amounts: mappedTokensAmounts[account].amounts,
   }));
 }
 
-function hashElements(treeElements, cycle) {
+function hashElements(treeElements, phaseId) {
   return treeElements.map((element, index) =>
     ethersKeccak(
       abiEncoder.encode(
-        ['uint256', 'uint256', 'address', 'address[]', 'uint256[]'],
-        [cycle.toString(), index.toString(), element.account, element.tokens, element.amounts]
+        ['uint256', 'uint256', 'address', 'uint256[]'],
+        [phaseId.toString(), index.toString(), element.account, element.amounts]
       )
     )
   );

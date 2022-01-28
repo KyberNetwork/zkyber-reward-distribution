@@ -4,7 +4,7 @@ const (
 	EnvVarChainId            = "CHAIN_ID"
 	EnvVarSubgraphExchange   = "SUBGRAPH_EXCHANGE"
 	EnvVarSubgraphAggregator = "SUBGRAPH_AGGREGATOR"
-	EnvVarCycle              = "CYCLE"
+	EnvVarPhaseId            = "PHASE_ID"
 	EnvVarStartTimestamp     = "START_TIMESTAMP"
 	EnvVarEndTimestamp       = "END_TIMESTAMP"
 	EnvVarTotalReward        = "TOTAL_REWARD"

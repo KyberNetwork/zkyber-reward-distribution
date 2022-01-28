@@ -66,14 +66,14 @@ func (s *KyberReward) getResultFiles(root string) ([]string, error) {
 	return files, nil
 }
 
-func (s *KyberReward) CalculateRewardForUsers(cycle int) error {
+func (s *KyberReward) CalculateRewardForUsers(phaseId int) error {
 	result := &Rewards{
-		Cycle:          cycle,
+		PhaseId:        phaseId,
+		Tokens:         s.rewardTokens,
+		Amounts:        s.rewardAmounts,
 		StartTimestamp: s.startTimestamp,
 		EndTimestamp:   s.endTimestamp,
 		UserRewards:    map[common.Address]OneReward{},
-		Tokens:         s.rewardTokens,
-		Amounts:        s.rewardAmounts,
 	}
 
 	filePaths, err := s.getResultFiles("data")
@@ -113,7 +113,6 @@ func (s *KyberReward) CalculateRewardForUsers(cycle int) error {
 	for _, a := range finalList {
 		address := common.HexToAddress(a)
 		one := OneReward{
-			Tokens:  s.rewardTokens,
 			Amounts: []*big.Int{},
 		}
 		for i, _ := range s.rewardTokens {
@@ -134,13 +133,13 @@ func (s *KyberReward) CalculateRewardForUsers(cycle int) error {
 
 	// Write final list
 	if err := util.WriteUsersListToFile(finalList, fmt.Sprintf(
-		"%s/cycle_%d",
+		"%s/phase_%d",
 		zCommon.ResultsFolder,
-		result.Cycle,
+		result.PhaseId,
 	), fmt.Sprintf(
-		"%s/cycle_%d/users_list.json",
+		"%s/phase_%d/users_list.json",
 		zCommon.ResultsFolder,
-		result.Cycle,
+		result.PhaseId,
 	)); err != nil {
 		fmt.Printf("can not write data to file, err: %v", err)
 
@@ -149,13 +148,13 @@ func (s *KyberReward) CalculateRewardForUsers(cycle int) error {
 
 	// Write reward data
 	if err := WriteRewardDataToFile(result, fmt.Sprintf(
-		"%s/cycle_%d",
+		"%s/phase_%d",
 		zCommon.ResultsFolder,
-		result.Cycle,
+		result.PhaseId,
 	), fmt.Sprintf(
-		"%s/cycle_%d/reward_data.json",
+		"%s/phase_%d/reward_data.json",
 		zCommon.ResultsFolder,
-		result.Cycle,
+		result.PhaseId,
 	)); err != nil {
 		fmt.Printf("can not write data to file, err: %v", err)
 
