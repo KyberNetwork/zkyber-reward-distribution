@@ -10,7 +10,7 @@ import (
 
 func newRewardCmd() *cobra.Command {
 	var (
-		cycle          int
+		phaseId        int
 		startTimestamp int
 		endTimestamp   int
 		totalReward    string
@@ -22,15 +22,15 @@ func newRewardCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			kyberReward := reward.NewKyberReward(uint64(startTimestamp), uint64(endTimestamp), totalReward)
 
-			return kyberReward.CalculateRewardForUsers(cycle)
+			return kyberReward.CalculateRewardForUsers(phaseId)
 		},
 	}
 
-	command.Flags().IntVar(&cycle, "cycle", env.ParseNumFromEnv(common.EnvVarCycle, common.DefaultCycle, 0, math.MaxInt), "cycle required")
+	command.Flags().IntVar(&phaseId, "phaseId", env.ParseNumFromEnv(common.EnvVarPhaseId, common.DefaultPhaseId, 0, math.MaxInt), "phase ID is required")
 	command.Flags().IntVar(&startTimestamp, "startTimestamp", env.ParseNumFromEnv(common.EnvVarStartTimestamp, common.DefaultStartTimestamp, 0, math.MaxInt64), "from timestamp")
 	command.Flags().IntVar(&endTimestamp, "endTimestamp", env.ParseNumFromEnv(common.EnvVarEndTimestamp, common.DefaultEndTimestamp, 0, math.MaxInt64), "end timestamp")
 	command.Flags().StringVar(&totalReward, "totalReward", env.StringFromEnv(common.EnvVarTotalReward, common.DefaultTotalReward), "total reward")
-	command.MarkFlagRequired("cycle")
+	command.MarkFlagRequired("phaseId")
 
 	return command
 }

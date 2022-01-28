@@ -11,7 +11,7 @@ With that in mind, Kyber team implemented the tool to do the following steps:
 3. The tool finds the users who belong to both lists.
 4. The tool generates a new reward distribution content in a file which has the same format as this [example json](https://github.com/KyberNetwork/zkyber-reward-distribution/blob/main/results/latest_merkle_data.json
    ). 
-5. The file provides all the information needed for a new reward distribution cycle.
+5. The file provides all the information needed for a new reward distribution phase.
 
 ## How to use
 1. Clone this repository to your local machine
@@ -28,13 +28,13 @@ After a while if you see something like this:
 Number of eligible users: 4533
 
 ==============================
-Writing users list to ./results/cycle_1/users_list.json...
-Writing reward data to ./results/cycle_1/reward_data.json...
-Writing merkle data to ./results/cycle_1/merkle_data.json ...
+Writing users list to ./results/phase_1/users_list.json...
+Writing reward data to ./results/phase_1/reward_data.json...
+Writing merkle data to ./results/phase_1/merkle_data.json ...
 Done.
 ```
 
-You have run the tool successfully and the reward distribution content is saved to `./results/cycle_#{cycle}/merkle_data.json`.
+You have run the tool successfully and the reward distribution content is saved to `./results/phase_#{phaseId}/merkle_data.json`.
 
 *Note: numbers in the output can change*.
 
@@ -47,7 +47,7 @@ You can override any of the environment variables here. If you don't, the tool w
 | CHAIN_ID             | Log level (`trace`,`debug`,`info`,`warn`,`error`,`fatal`,`panic`) default: `info` |
 | SUBGRAPH_EXCHANGE    | Exchange subgraph url                                                             |
 | SUBGRAPH_AGGREGATOR  | Aggregator subgraph url                                                           |
-| CYCLE                | Cycle (1, 2, 3 ...), at the moment you have set it manually                       |
+| PHASE_ID             | Phase ID (1, 2, 3 ...), at the moment you have set it manually                    |
 | START_TIMESTAMP      | Start timestamp to calculate eligible users                                       |
 | END_TIMESTAMP        | End timestamp to calculate eligible users                                         |
 | TOTAL_REWARD         | Total reward in KNC                                                               |
