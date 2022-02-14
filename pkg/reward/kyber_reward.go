@@ -36,7 +36,7 @@ func NewKyberReward(startTimestamp, endTimestamp uint64, totalReward string) *Ky
 		startTimestamp,
 		endTimestamp,
 		[]common.Address{
-			common.HexToAddress("0xfe56d5892BDffC7BF58f2E84BE1b2C32D21C308b"), // KNC is only claimable on BSC
+			common.HexToAddress("0x1C954E8fe737F99f68Fa1CCda3e51ebDB291948C"), // KNC is only claimable on Polygon
 		},
 		[]*big.Int{
 			totalRewardBI,
